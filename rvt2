@@ -1,0 +1,96 @@
+#!/bin/sh
+
+ # Detect automatically the  current directory
+if hash greadlink 2>/dev/null ; then
+   # OSX
+   READLINK=greadlink
+else
+   # Linux
+   READLINK=readlink
+fi
+CURRENTDIR=$(dirname $($READLINK -f $0))
+DOCKER="docker"
+
+# Create these variables, if not already created
+RVT2_MORGUE=${RVT2_MORGUE:-$CURRENTDIR/morgue}
+RVT2_IMAGEDIR=${RVT2_IMAGEDIR:-$CURRENTDIR/images}
+RVT2_CONFIG=${RVT2_CONFIG:-$CURRENTDIR/local.cfg}
+RVT2_PLUGINS=${RVT2_PLUGINS:-$CURRENTDIR/addons}
+SERVER_PORT=5000
+# Name of the image and container
+IMAGE="${IMAGE:-incide/rvt2:latest}"
+NAME="${NAME:-rvt2}"
+
+start() {
+    if [ ! -d ${RVT2_MORGUE} ]; then
+        echo "${RVT2_MORGUE} doesn't exist, creating it..."
+        mkdir -p $RVT2_MORGUE
+    fi
+    if [ ! -d ${RVT2_IMAGEDIR} ]; then
+        echo "${RVT2_IMAGEDIR} doesn't exist, creating it..."
+        mkdir -p $RVT2_IMAGEDIR
+    fi
+    if [ ! -d ${RVT2_PLUGINS} ]; then
+        echo "${RVT2_PLUGINS} doesn't exist, creating it..."
+        mkdir -p $RVT2_PLUGINS
+    fi
+    if [ ! -f ${RVT2_CONFIG} ]; then
+        echo "${RVT2_CONFIG} doesn't exist, creating it..."
+        touch $RVT2_CONFIG
+    fi
+    $DOCKER run --name ${NAME} -d --rm --privileged \
+        --mount type=bind,source="${RVT2_IMAGEDIR}",target=/morgue/images,readonly \
+        --mount type=bind,source="${RVT2_MORGUE}",target=/morgue \
+        --mount type=bind,source="${RVT2_CONFIG}",target=/opt/rvt2/conf/local.cfg \
+        --mount type=bind,source="${RVT2_PLUGINS}",target=/opt/rvt2/addons,readonly \
+        -p $SERVER_PORT:$SERVER_PORT \
+        ${IMAGE}
+}
+
+check_running() {
+    echo $($DOCKER container ls -f name=${NAME} -q)
+}
+
+stop() {
+    $DOCKER stop ${NAME}
+}
+
+shell() {
+    $DOCKER exec --user rvt -it ${NAME} /bin/bash
+}
+
+root() {
+    $DOCKER exec --user root -it ${NAME} /bin/bash
+}
+
+export_image() {
+    $DOCKER save ${IMAGE} | gzip > ${IMAGE}.tar.gz
+}
+
+run_command() {
+    if [ -z $(check_running) ]; then
+	     start
+    fi
+    $DOCKER exec -ti ${NAME} /opt/rvt2/rvt2 "$@"
+}
+
+case "$1" in
+    "start")
+        start
+        ;;
+    "stop")
+        stop
+        ;;
+    "shell")
+        shell
+        ;;
+    "root")
+        root
+        ;;
+    "export")
+        export_image
+        ;;
+    *)
+        run_command $@
+        ;;
+esac

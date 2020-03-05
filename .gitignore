@@ -1,0 +1,6 @@
+build/rvt2
+morgue
+addons
+rvt2:latest.tar.gz
+local.cfg
+*.swp

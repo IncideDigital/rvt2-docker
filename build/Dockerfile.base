@@ -1,0 +1,13 @@
+FROM debian:buster-slim
+
+# Copy setup (dependencies download & build & install) functions
+COPY ./rvt2/setup.sh /tmp
+
+RUN . /tmp/setup.sh && \
+    prepare && \
+    prepare_debian && \
+    install_debian_buildtools && \
+    install_debian_utils && \
+    install_debian_python && \
+    install_debian_deps
+
