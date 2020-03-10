@@ -4,10 +4,11 @@ Build the docker image from the root of the repository with:
 
 ```
 cd build
-git clone URLTORVT2 rvt2
+git clone https://github.com/IncideDigital/rvt2.git rvt2
 cd rvt2
 git submodule init
 git submodule update
+cd ..
 docker build -t incide/rvt2-base:latest -f Dockerfile.base .
 docker build -t incide/rvt2-tools:latest -f Dockerfile.tools .
 docker build -t incide/rvt2:latest -f Dockerfile .
