@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# WARNING: This server is not intended to be used in a unsecured environment.
+# WARNING: This server is not intended to be used in an unsecured environment.
 # It runs the RVT2, and it is supposed to be run as root. As a result,
 # no authentication, authorization or parameter checking is done in this source:
 # WARNING: ALL KIND OF INJECTIONS ARE POSSIBLE!!!!!
