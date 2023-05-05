@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:stable-20221114-slim
 
 # Copy setup (dependencies download & build & install) functions
 COPY ./rvt2/setup.sh /tmp

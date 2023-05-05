@@ -16,7 +16,6 @@ RUN echo "PS1='\u@\h [rvt2] \w\\n \$ '" >> /home/rvt/.bashrc && \
     ln -s /opt/rvt2/rvt2 /usr/bin/rvt2 && \
     rm -rf /opt/rvt2/.git
 
-# Install rvt2 python dependencies
 RUN . /tmp/setup.sh && install_pip_deps
 
 WORKDIR /morgue
