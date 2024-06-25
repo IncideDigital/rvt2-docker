@@ -4,6 +4,7 @@ COPY ./rvt2/setup.sh /tmp
 COPY ./rvt2/patches /tmp/patches
 
 RUN . /tmp/setup.sh && \
+    install_zimmerman_tools && \
     build_install_libesedb && \
     build_install_liblnk && \
     build_install_libscca && \
@@ -14,6 +15,6 @@ RUN . /tmp/setup.sh && \
     build_install_regripper && \
     build_install_volatility && \
     build_install_sleuthkit && \
+    build_install_libevt && \
     build_install_evtx && \
-    build_install_ntfs3g_system_compression && \
     prepare_sudo

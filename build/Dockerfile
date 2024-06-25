@@ -12,7 +12,6 @@ COPY rvt2/setup.sh /tmp
 RUN echo "PS1='\u@\h [rvt2] \w\\n \$ '" >> /home/rvt/.bashrc && \
     echo "export LC_ALL=C.UTF-8" >> /home/rvt/.bashrc && \
     echo "export LANG=C.UTF-8" >> /home/rvt/.bashrc && \
-    apt-get install -y python3-flask python3-flask-cors && \
     ln -s /opt/rvt2/rvt2 /usr/bin/rvt2 && \
     rm -rf /opt/rvt2/.git
 
